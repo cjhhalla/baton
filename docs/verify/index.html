@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>바톤 반납 증명서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow certificate sheet — seal header, ledger of facts, handover items, key fingerprints at the foot */
+:root {
+  --bg: #eef1ef;
+  --sheet: #ffffff;
+  --ink: #17201c;
+  --quiet: #5d6a64;
+  --rule: #d5dcd8;
+  --seal: #13795b;
+  --seal-soft: #e2f2ec;
+  --bad: #b3362d;
+  --bad-soft: #fbe9e7;
+  --warn: #9a5a00;
+  --warn-soft: #fbf0dc;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1412; --sheet: #171e1b; --ink: #e9efec; --quiet: #9aa8a1; --rule: #2a3530;
+  --seal: #4fd1a1; --seal-soft: #173328; --bad: #ff8a80; --bad-soft: #3a1c1a; --warn: #f2b45a; --warn-soft: #3a2b14; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1412; --sheet: #171e1b; --ink: #e9efec; --quiet: #9aa8a1; --rule: #2a3530;
+  --seal: #4fd1a1; --seal-soft: #173328; --bad: #ff8a80; --bad-soft: #3a1c1a; --warn: #f2b45a; --warn-soft: #3a2b14; color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 40px; }
+.sheet { max-width: 440px; margin: 0 auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 24px 20px 20px; display: grid; gap: 22px; }
+.brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; color: var(--quiet); letter-spacing: .04em; }
+.brand b { color: var(--ink); font-weight: 700; letter-spacing: .12em; }
+.serial { font-family: var(--font-mono); font-size: 12px; }
+h1 { margin: 0; font-size: 26px; line-height: 1.25; font-weight: 700; text-wrap: balance; }
+.sub { margin: 4px 0 0; color: var(--quiet); font-size: 14px; }
+
+.seal { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 6px; background: var(--seal-soft); color: var(--seal); }
+.seal.bad { background: var(--bad-soft); color: var(--bad); }
+.seal.wait { background: var(--bg); color: var(--quiet); }
+.seal svg { flex: none; width: 30px; height: 30px; }
+.seal strong { display: block; font-size: 15px; }
+.seal span { font-size: 13px; color: var(--ink); opacity: .8; }
+
+.ledger { display: grid; grid-template-columns: auto 1fr; margin: 0; border-top: 1px solid var(--rule); }
+.ledger dt, .ledger dd { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.ledger dt { color: var(--quiet); font-size: 13px; padding-right: 16px; white-space: nowrap; }
+.ledger dd { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }
+.tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+.tag.ok { background: var(--seal-soft); color: var(--seal); }
+.tag.late { background: var(--bad-soft); color: var(--bad); }
+.tag.off { background: var(--warn-soft); color: var(--warn); }
+
+h2 { margin: 0 0 8px; font-size: 13px; color: var(--quiet); font-weight: 500; letter-spacing: .06em; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.items li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 6px; background: var(--warn-soft); }
+.items li b { font-weight: 500; }
+.items li span { color: var(--quiet); font-size: 13px; text-align: right; }
+.items li.clear { background: var(--seal-soft); color: var(--seal); }
+
+.keys { display: grid; gap: 8px; padding-top: 14px; border-top: 1px dashed var(--rule); font-size: 12px; color: var(--quiet); }
+.keys code { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink); letter-spacing: .02em; overflow-wrap: anywhere; }
+.keys p { margin: 0; }
+.note { font-size: 12px; color: var(--quiet); margin: 0; }
+.example { font-size: 12px; color: var(--warn); background: var(--warn-soft); padding: 8px 12px; border-radius: 6px; margin: 0; }
+button { font: 500 14px var(--font-body); color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--seal); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<main class="sheet" aria-live="polite">
+  <div class="brand"><b>BATON</b><span class="serial" id="serial">기록 지문 —</span></div>
+  <div>
+    <h1>반납 증명서</h1>
+    <p class="sub" id="car">차량 정보를 읽는 중</p>
+  </div>
+  <div class="seal wait" id="seal">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    <div><strong>서명 확인 중</strong><span>차량이 남긴 전자서명을 검사하고 있어요</span></div>
+  </div>
+  <p class="example" id="example" hidden>QR 없이 열어서 예시 증명서를 보여 드리고 있어요. 차에서 반납하면 이 자리에 실제 기록이 표시됩니다.</p>
+  <dl class="ledger" id="ledger"></dl>
+  <section>
+    <h2>다음 운전자에게 넘긴 항목</h2>
+    <ul class="items" id="items"></ul>
+  </section>
+  <section id="warnBox" hidden>
+    <h2>반납 때 켜져 있던 경고</h2>
+    <ul class="items" id="warns"></ul>
+  </section>
+  <div class="keys">
+    <p>차량 키 ID<br><code id="keyId">—</code></p>
+    <p class="note">렌터카 업체에 등록된 이 차의 키 ID와 같으면, 이 기록은 그 차 안에서 만들어진 뒤 바뀌지 않은 것입니다.</p>
+    <div><button type="button" id="copy">증명서 링크 복사</button></div>
+  </div>
+</main>
+
+<script>
+const EXAMPLE = "eyJ2IjoxLCJjYXIiOiLsi5zsl7Ag7LCo65-JIDEy6rCAIDM0NTYiLCJkcnYiOiLsmrTsoITsnpAgQSIsInBpY2siOjE3OTM4NjA5MjAwMDAsInJldCI6MTc5Mzg2OTQ0MDAwMCwiZHVlIjoxNzkzODY5ODAwMDAwLCJzb2MiOjY0LCJmdWVsIjpudWxsLCJvZG8iOjEyODczLjQsInRyaXAiOjMzLjQsInNwb3QiOnRydWUsImRpc3QiOjQyLCJpc3MiOltbIkxJR0hUIiwi7KGw66qFIOy8nOynkCIsIuyLpOuCtOuTsSJdLFsiSVRFTSIsIuyijOyEneyXkCDrrZTqsIAg7J6I7Ja07JqUIiwi65K37KKM7ISdIOyYpOuluOyqvSJdXSwid2FybiI6W119.MEUCIE5ZPi9-vzRr0KH-aytxr_ClBw-VvuC-RhrFa6ffwtSNAiEAqko6Hi1jfHbcGqPs4wneU3_kKT1XRVxKYyqU7Vga6Ns.MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEzicWjPIZgQ_9UT2BZGg8VzvdMMlGuyw19yDhj5BJ38VchG47zMQC1g155TDiu--_6l7r4fnoR8B8Ug9fZnHBrg";
+const $ = id => document.getElementById(id);
+const b64 = s => { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); };
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+const group = h => h.slice(0, 16).toUpperCase().match(/.{4}/g).join(" ");
+const two = n => String(n).padStart(2, "0");
+const when = ms => { const d = new Date(ms); return `${d.getFullYear()}.${two(d.getMonth() + 1)}.${two(d.getDate())} ${two(d.getHours())}:${two(d.getMinutes())}`; };
+const span = min => min < 60 ? `${min}분` : min < 1440 ? `${Math.floor(min / 60)}시간${min % 60 ? " " + (min % 60) + "분" : ""}` : `${Math.floor(min / 1440)}일`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* Android가 주는 DER 서명을 Web Crypto가 받는 r||s(64바이트)로 바꾼다 */
+function derToRaw(der) {
+  let i = 2; if (der[1] & 0x80) i += der[1] & 0x7f;
+  const read = () => { i++; let len = der[i++]; let v = der.slice(i, i + len); i += len; while (v.length > 32 && v[0] === 0) v = v.slice(1); const out = new Uint8Array(32); out.set(v, 32 - v.length); return out; };
+  const r = read(), s = read(); const raw = new Uint8Array(64); raw.set(r); raw.set(s, 32); return raw;
+}
+
+function setSeal(kind, title, text) {
+  const icon = kind === "ok"
+    ? '<path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+    : '<path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>';
+  $("seal").className = "seal" + (kind === "ok" ? "" : " bad");
+  $("seal").innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>${icon}</svg><div><strong>${title}</strong><span>${text}</span></div>`;
+}
+
+function render(r) {
+  $("car").textContent = `${r.car} · ${r.drv}`;
+  const rows = [];
+  if (r.pick) rows.push(["인수", when(r.pick)]);
+  rows.push(["반납", when(r.ret)]);
+  if (r.pick) rows.push(["이용 시간", span(Math.max(0, Math.round((r.ret - r.pick) / 60000)))]);
+  if (r.due) {
+    const late = Math.floor((r.ret - r.due) / 60000);
+    rows.push(["반납 예정", `${when(r.due)}<span class="tag ${late > 0 ? "late" : "ok"}">${late > 0 ? span(late) + " 늦음" : "제시간"}</span>`]);
+  }
+  if (r.spot != null) rows.push(["반납 위치", r.spot ? `지정 장소<span class="tag ok">반경 300m 안</span>` : `다른 곳<span class="tag off">${r.dist >= 1000 ? (r.dist / 1000).toFixed(1) + " km" : r.dist + " m"} 떨어짐</span>`]);
+  if (r.soc != null) rows.push(["배터리", `${r.soc}%`]);
+  else if (r.fuel != null) rows.push(["연료", `${r.fuel}%`]);
+  if (r.odo != null) rows.push(["누적 주행거리", `${Number(r.odo).toLocaleString("ko-KR", { minimumFractionDigits: 1 })} km`]);
+  if (r.trip != null) rows.push(["이번 운행", `${Number(r.trip).toFixed(1)} km`]);
+  $("ledger").innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("items").innerHTML = (r.iss || []).length
+    ? r.iss.map(([, t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join("")
+    : '<li class="clear"><b>모두 정상</b><span>넘긴 항목 없음</span></li>';
+  if ((r.warn || []).length) { $("warnBox").hidden = false; $("warns").innerHTML = r.warn.map(w => `<li><b>${esc(w)}</b></li>`).join(""); }
+}
+
+async function main() {
+  let token = location.hash.slice(1);
+  if (!token.includes(".")) { token = EXAMPLE; $("example").hidden = false; }
+  const [b, s, k] = token.split(".");
+  let body, record;
+  try { body = b64(b); record = JSON.parse(new TextDecoder().decode(body)); }
+  catch { setSeal("bad", "증명서를 읽을 수 없어요", "QR을 다시 찍거나, 링크가 잘리지 않았는지 확인해 주세요."); return; }
+  render(record);
+  const spki = b64(k);
+  $("serial").textContent = "기록 " + group(hex(await crypto.subtle.digest("SHA-256", body))).slice(0, 9);
+  $("keyId").textContent = group(hex(await crypto.subtle.digest("SHA-256", spki)));
+  try {
+    const key = await crypto.subtle.importKey("spki", spki, { name: "ECDSA", namedCurve: "P-256" }, false, ["verify"]);
+    const ok = await crypto.subtle.verify({ name: "ECDSA", hash: "SHA-256" }, key, derToRaw(b64(s)), body);
+    ok ? setSeal("ok", "차량 서명 확인됨", "반납 순간 차가 직접 서명한 기록이에요. 이후 바뀐 곳이 없습니다.")
+       : setSeal("bad", "서명이 맞지 않아요", "기록이 반납 뒤에 바뀌었을 수 있어요. 업체에 원본 확인을 요청하세요.");
+  } catch { setSeal("bad", "서명을 확인하지 못했어요", "이 브라우저에서 검증을 지원하지 않거나 서명 형식이 올바르지 않아요."); }
+}
+
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "복사했어요"; }
+  catch { $("copy").textContent = "주소창의 링크를 복사해 주세요"; }
+});
+main();
+</script>
+</body>
+</html>

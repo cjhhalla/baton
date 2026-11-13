@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        com.baton.app.data.ReturnProof.appContext = applicationContext
         setContent { BatonApp(viewModel) }
         if (!viewModel.state.value.locationPermission) {
             locationPermission.launch(

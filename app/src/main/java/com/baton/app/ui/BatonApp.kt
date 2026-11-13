@@ -687,7 +687,15 @@ private fun ReportScreen(s: UiState, vm: BatonViewModel) {
                 Spacer(Modifier.height(10.dp))
                 IssueGrid(r.issues)
             }
-            r.proof?.let { ProofCard(it) }
+            if (r.proof != null) ProofCard(r.proof)
+            else CardBox(Modifier.width(300.dp).fillMaxHeight()) {
+                Text("반납 증명서", color = Ink, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "증명서를 만들지 못했어요" + (com.baton.app.data.ReturnProof.lastError?.let { "\n$it" } ?: "\n(이전 버전에서 만든 기록이에요)"),
+                    color = Quiet, fontSize = 16.sp
+                )
+            }
         }
 
         Spacer(Modifier.height(20.dp))
@@ -707,8 +715,9 @@ private fun ProofCard(url: String) {
                 mapOf(EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.L, EncodeHintType.MARGIN to 2)
             )
         }.getOrNull()
-    } ?: return
+    }
     CardBox(Modifier.width(300.dp).fillMaxHeight()) {
+        if (matrix == null) { Text("QR을 그리지 못했어요", color = Quiet, fontSize = 16.sp); return@CardBox }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Rounded.Verified, null, tint = Good, modifier = Modifier.size(28.dp))
             Spacer(Modifier.width(8.dp))
